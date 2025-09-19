@@ -13,6 +13,14 @@ The following software must be installed on your system:
 
 Text World should work on any [POSIX](https://en.wikipedia.org/wiki/POSIX) system.
 
+## Installing Dependencies
+
+To install all dependencies, run:
+
+```sh
+make dependencies
+```
+
 ## Contributors
 
 * Sven Pfaller &lt;sven@inrain.org>

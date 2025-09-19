@@ -19,6 +19,10 @@ lint:
 .PHONY: check
 check: type test lint
 
+.PHONY: dependencies
+dependencies:
+	$(PIP) install $(PIPFLAGS) --requirement=requirements.txt
+
 .PHONY: dependencies-dev
 dependencies-dev:
 	$(PIP) install $(PIPFLAGS) --requirement=requirements-dev.txt
