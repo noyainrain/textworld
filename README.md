@@ -8,3 +8,5 @@ Co-op text adventure game. 📃✨
 ## Contributors
 
 * Sven Pfaller &lt;sven@inrain.org>
+
+Copyright (c) 2025 Text World contributors
