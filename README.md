@@ -5,6 +5,10 @@
 
 Co-op text adventure game. 📃✨
 
+## System Requirements
+
+Text World should work on any [POSIX](https://en.wikipedia.org/wiki/POSIX) system.
+
 ## Contributors
 
 * Sven Pfaller &lt;sven@inrain.org>
