@@ -2,6 +2,7 @@ PYTHON=python3
 PYTHONFLAGS=-W error
 PIP=pip3
 PIPFLAGS=--upgrade --upgrade-strategy=eager
+PYLINTFLAGS=
 
 .PHONY: test
 test:
@@ -11,8 +12,12 @@ test:
 type:
 	-mypy
 
+.PHONY: lint
+lint:
+	-pylint $(PYLINTFLAGS)
+
 .PHONY: check
-check: type test
+check: type test lint
 
 .PHONY: dependencies-dev
 dependencies-dev:
