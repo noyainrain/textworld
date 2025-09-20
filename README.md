@@ -7,6 +7,10 @@ Co-op text adventure game. 📃✨
 
 ## System Requirements
 
+The following software must be installed on your system:
+
+* Python >= 3.11
+
 Text World should work on any [POSIX](https://en.wikipedia.org/wiki/POSIX) system.
 
 ## Contributors
