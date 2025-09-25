@@ -5,6 +5,7 @@ from __future__ import annotations
 from asyncio import CancelledError, Task
 from collections.abc import Awaitable, Mapping
 from configparser import ConfigParser
+from importlib import resources
 from os import PathLike
 from typing import Generic, TypeVar
 
@@ -20,16 +21,26 @@ async def cancel(task: Task[object]) -> None:
     except CancelledError:
         pass
 
-def read_config(*paths: PathLike[str] | str) -> ConfigParser:
+def read_config(*paths: PathLike[str] | str | tuple[str, str]) -> ConfigParser:
     """Read configuration from *paths*.
 
-    Unreadable paths are ignored.
+    For convenience, a path can point to a package resource as a tuple with the items *anchor* and
+    *path*, which specifies the *path* to a resource in the package at the given *anchor*.
+
+    Unreadable filesystem paths are ignored. If there is a problem importing a package, an
+    :exc:`ImportError` is raised. If there is a problem reading a resource, an :exc:`OSError` is
+    raised.
 
     If there is a problem parsing a config file, a :exc:`configparser.ParsingError` is raised.
     """
     # Ensure all parsing problems are covered by ParsingError
     config = ConfigParser(strict=False, interpolation=None)
-    config.read(paths)
+    for path in paths:
+        if isinstance(path, tuple):
+            with (resources.files(path[0]) / path[1]).open() as f:
+                config.read_file(f)
+        else:
+            config.read(path)
     return config
 
 class HTTPServerRequest(tornado.httputil.HTTPServerRequest):

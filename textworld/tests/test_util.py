@@ -14,11 +14,12 @@ class CancelTest(IsolatedAsyncioTestCase):
 
 class ReadConfigTest(TestCase):
     def test(self) -> None:
-        with resources.as_file(resources.files(f'{__package__}.res') / 'cat2.ini') as path:
-            config = read_config(path)
+        res = f'{__package__}.res'
+        with resources.as_file(resources.files(res) / 'cat2.ini') as path:
+            config = read_config((res, 'cat1.ini'), path)
         try:
             options = dict(config['cat'])
         except KeyError:
             self.fail()
-        cat = {'age': '7'}
+        cat = {'name': 'Frank', 'age': '7'}
         self.assertEqual(options, cat)
