@@ -6,15 +6,15 @@ PYLINTFLAGS=
 
 .PHONY: test
 test:
-	-$(PYTHON) $(PYTHONFLAGS) -m unittest
+	$(PYTHON) $(PYTHONFLAGS) -m unittest
 
 .PHONY: type
 type:
-	-mypy
+	mypy
 
 .PHONY: lint
 lint:
-	-pylint $(PYLINTFLAGS)
+	pylint $(PYLINTFLAGS) textworld
 
 .PHONY: check
 check: type test lint
