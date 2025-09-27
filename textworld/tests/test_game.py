@@ -7,4 +7,6 @@ from unittest import IsolatedAsyncioTestCase
 class TestCase(IsolatedAsyncioTestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        logging.disable()
+        # TESTING
+        #logging.disable()
+        logging.basicConfig()
