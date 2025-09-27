@@ -2,12 +2,21 @@
 
 from __future__ import annotations
 
+from asyncio import CancelledError, Task
 from collections.abc import Awaitable, Mapping
 from typing import Generic, TypeVar
 
 import tornado
 
 M_co = TypeVar('M_co', bound=Mapping[str, object], covariant=True)
+
+async def cancel(task: Task[object]) -> None:
+    """Cancel a *task*."""
+    task.cancel()
+    try:
+        await task
+    except CancelledError:
+        pass
 
 class HTTPServerRequest(tornado.httputil.HTTPServerRequest):
     """HTTP request with type annotations for connection details."""
