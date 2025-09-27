@@ -16,13 +16,14 @@ async def main() -> int:
     logger = getLogger(__name__)
 
     try:
-        read_config((f'{__package__}.res', 'default.ini'), 'textworld.ini')
+        config = read_config((f'{__package__}.res', 'default.ini'), 'textworld.ini')
     except ParsingError as e:
         print(f'⚠️ Failed to load the config file ({e})', file=sys.stderr)
         return 1
+    options = config['textworld']
 
     try:
-        server = serve()
+        server = serve(host=options['host'], port=int(options['port']))
     except OSError as e:
         print(f'⚠️ Failed to start the web server ({e})', file=sys.stderr)
         return 1
