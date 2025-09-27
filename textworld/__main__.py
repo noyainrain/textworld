@@ -2,16 +2,24 @@
 
 import asyncio
 from asyncio import CancelledError, Event
+from configparser import ParsingError
 import logging
 from logging import getLogger
 import sys
 
 from .server import serve
+from .util import read_config
 
 async def main() -> int:
     """Run Text World."""
     logging.basicConfig(format='%(asctime)s %(levelname)s %(name)s %(message)s', level=logging.INFO)
     logger = getLogger(__name__)
+
+    try:
+        read_config((f'{__package__}.res', 'default.ini'), 'textworld.ini')
+    except ParsingError as e:
+        print(f'⚠️ Failed to load the config file ({e})', file=sys.stderr)
+        return 1
 
     try:
         server = serve()
