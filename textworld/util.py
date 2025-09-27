@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from asyncio import CancelledError, Task
 from collections.abc import Awaitable, Mapping
+from configparser import ConfigParser
+from os import PathLike
 from typing import Generic, TypeVar
 
 import tornado
@@ -17,6 +19,18 @@ async def cancel(task: Task[object]) -> None:
         await task
     except CancelledError:
         pass
+
+def read_config(*paths: PathLike[str] | str) -> ConfigParser:
+    """Read configuration from *paths*.
+
+    Unreadable paths are ignored.
+
+    If there is a problem parsing a config file, a :exc:`configparser.ParsingError` is raised.
+    """
+    # Ensure all parsing problems are covered by ParsingError
+    config = ConfigParser(strict=False, interpolation=None)
+    config.read(paths)
+    return config
 
 class HTTPServerRequest(tornado.httputil.HTTPServerRequest):
     """HTTP request with type annotations for connection details."""
