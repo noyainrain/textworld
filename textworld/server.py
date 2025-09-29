@@ -1,7 +1,10 @@
 """Web server."""
 
+from contextlib import AbstractContextManager
+from importlib import resources
 import logging
 from logging import getLogger
+from pathlib import Path
 from types import TracebackType
 from typing import TypedDict
 
@@ -25,9 +28,7 @@ class _RequestHandler(RequestHandler[_Settings]):
 
 class _Client(_RequestHandler):
     def get(self, *args: str, **kwargs: str) -> None:
-        # TESTING
-        # raise ValueError('lol')
-        pass
+        self.render('index.html')
 
 def _log(handler: _RequestHandler) -> None:
     request = handler.request
@@ -44,8 +45,9 @@ def _log(handler: _RequestHandler) -> None:
 class Server:
     """Game web server."""
 
-    def __init__(self, _http: HTTPServer) -> None:
+    def __init__(self, _http: HTTPServer, _client_directory: AbstractContextManager[Path]) -> None:
         self._http = _http
+        self._client_directory = _client_directory
 
     @property
     def url(self) -> str:
@@ -57,6 +59,7 @@ class Server:
     def close(self) -> None:
         """Stop the server."""
         self._http.stop()
+        self._client_directory.__exit__(None, None, None)
 
 def serve(*, host: str = '', port: int = 8080) -> Server:
     """Serve the active game over the web.
@@ -68,7 +71,14 @@ def serve(*, host: str = '', port: int = 8080) -> Server:
     url_host = host or 'localhost'
     url = f'http://{url_host}:{port}/'
 
-    app: Application[_Settings] = Application([('/.*', _Client)], compress_response=True,
-                                              log_function=_log, url=url)
-    http = app.listen(port, address=host, xheaders=True)
-    return Server(http)
+    client_directory = resources.as_file(resources.files(f'{__package__}.res') / 'client')
+    client_path = client_directory.__enter__()
+    try:
+        app: Application[_Settings] = Application(
+            [('/.*', _Client)], compress_response=True, log_function=_log,
+            template_path=client_path, url=url)
+        http = app.listen(port, address=host, xheaders=True)
+        return Server(http, client_directory)
+    except:
+        client_directory.__exit__(None, None, None)
+        raise
