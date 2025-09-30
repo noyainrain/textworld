@@ -10,6 +10,8 @@ Co-op text adventure game. 📃✨
 The following software must be installed on your system:
 
 * Python >= 3.11
+* Node.js >= 18.20
+  ^ OQ at the moment this is only dev dependencies... mmmmmhhhhh
 
 Text World should work on any [POSIX](https://en.wikipedia.org/wiki/POSIX) system.
 
