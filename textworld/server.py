@@ -76,7 +76,7 @@ def serve(*, host: str = '', port: int = 8080) -> Server:
     try:
         app: Application[_Settings] = Application(
             [('/.*', _Client)], compress_response=True, log_function=_log,
-            template_path=client_path, url=url)
+            template_path=client_path, static_path=client_path, url=url)
         http = app.listen(port, address=host, xheaders=True)
         return Server(http, client_directory)
     except:
