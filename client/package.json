@@ -7,6 +7,8 @@
         "type": "tsc --project jsconfig.json"
     },
     "devDependencies": {
-        "typescript": "^5.9"
+        "typescript": "^5.9",
+        "eslint": "^9.37",
+        "@eslint/js": "^9.32"
     }
 }
