@@ -3,6 +3,9 @@
     "imports": {
         "#*": "./src/*.js"
     },
+    "scripts": {
+        "type": "tsc --project jsconfig.json"
+    },
     "devDependencies": {
         "typescript": "^5.9"
     }

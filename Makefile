@@ -13,6 +13,7 @@ test:
 .PHONY: type
 type:
 	mypy
+	-$(NPM) --prefix=client run type
 
 .PHONY: lint
 lint:
