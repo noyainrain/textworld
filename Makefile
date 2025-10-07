@@ -10,6 +10,10 @@ NPMFLAGS=--no-package-lock
 test:
 	$(PYTHON) $(PYTHONFLAGS) -m unittest
 
+.PHONY: test-client
+test-client:
+	-$(NPM) --prefix=textworld/res/client run test
+
 .PHONY: type
 type:
 	mypy
@@ -21,7 +25,7 @@ lint:
 	-$(NPM) --prefix=client run lint
 
 .PHONY: check
-check: type test lint
+check: type test test-client lint
 
 .PHONY: dependencies
 dependencies:

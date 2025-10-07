@@ -5,6 +5,7 @@
     },
     "scripts": {
         "type": "tsc --project jsconfig.json",
+        "test": "wtr",
         "lint": "eslint"
     },
     "devDependencies": {
