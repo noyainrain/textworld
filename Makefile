@@ -18,6 +18,7 @@ type:
 .PHONY: lint
 lint:
 	pylint $(PYLINTFLAGS) textworld
+	-$(NPM) --prefix=client run lint
 
 .PHONY: check
 check: type test lint

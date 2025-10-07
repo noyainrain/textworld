@@ -4,7 +4,8 @@
         "#*": "./src/*.js"
     },
     "scripts": {
-        "type": "tsc --project jsconfig.json"
+        "type": "tsc --project jsconfig.json",
+        "lint": "eslint"
     },
     "devDependencies": {
         "typescript": "^5.9",
