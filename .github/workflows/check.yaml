@@ -16,5 +16,5 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python }}
-      - run: make dependencies-dev
+      - run: make dependencies dependencies-dev
       - run: make check PYLINTFLAGS=--output-format=github
