@@ -49,4 +49,24 @@ export class Content {
 
     return new Content(Array.from(fragment.childNodes), parts);
   }
+
+  /**
+   * Update the content.
+   * @param {Object<string, unknown>} data - Data by part property path. A part property path is the
+   * name of the part, followed by a dot, followed by the name of the property.
+   * @returns {this}
+   */
+  update(data) {
+    for (let [path, value] of Object.entries(data)) {
+      // OQ do we want to allow "foo" and "foo."?
+      const [name, property] = path.split(".", 2);
+      const part = this.parts[name ?? ""];
+      if (!part) {
+        throw new Error("lol");
+      }
+      // @ts-ignore
+      part[property ?? ""] = value;
+    }
+    return this;
+  }
 }
