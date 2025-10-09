@@ -12,7 +12,9 @@
 
         <script type="importmap">
             {
-                "imports": {}
+                "imports": {
+                    "#util": "{{ static_url('src/util.js') }}"
+                }
             }
         </script>
         <script type="module" src="{{ static_url('src/game.js') }}"></script>

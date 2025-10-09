@@ -12,7 +12,7 @@ test:
 
 .PHONY: test-client
 test-client:
-	-$(NPM) --prefix=textworld/res/client run test
+	$(NPM) --prefix=textworld/res/client run test
 
 test-ui:
 	$(PYTHON) $(PYTHONFLAGS) -m unittest textworld.tests.ui_test
