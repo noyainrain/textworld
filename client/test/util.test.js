@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { Content } from "#util";
+import { Content, Router } from "#util";
 
 describe("Content", function () {
   beforeEach(function () {
@@ -37,6 +37,22 @@ describe("Content", function () {
       expect(content.parts.name?.textContent).to.equal("Frank");
       expect(content.parts.food?.textContent).to.equal("ab");
       expect(content.parts["more-food"]?.textContent).to.equal("x");
+    });
+  });
+});
+
+describe("Router", function () {
+  const router = new Router([["^/cats/([^/]+)$", (...args) => args], ["^/cats/", () => null]]);
+
+  describe("route", function () {
+    it("should query a path", async function () {
+      const args = await router.route("/cats/frank");
+      expect(args).to.deep.equal(["frank"]);
+    });
+
+    it("should not query an unknown path", async function () {
+      const result = await router.route("/foo");
+      expect(result).to.be.undefined;
     });
   });
 });
