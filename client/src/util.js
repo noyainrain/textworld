@@ -64,8 +64,19 @@ export class Content {
       if (!part) {
         throw new Error("lol");
       }
-      // @ts-ignore
-      part[property ?? ""] = value;
+      if (property === "children") {
+        // @ts-ignore
+        if (value?.[Symbol.iterator]) {
+          // @ts-ignore
+          part.replaceChildren(...value);
+        } else {
+          // @ts-ignore
+          part.replaceChildren(value);
+        }
+      } else {
+        // @ts-ignore
+        part[property ?? ""] = value;
+      }
     }
     return this;
   }
