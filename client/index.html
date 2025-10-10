@@ -2,6 +2,23 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
+        <meta name="viewport" content="initial-scale=1" />
         <title>Text World</title>
+
+        <!-- a) just allow origin b) full links c) full links for public worlds, origin for private
+             worlds -->
+        <!-- TODO referrer -->
+        <!-- TODO robots -->
+
+        <script type="importmap">
+            {
+                "imports": {}
+            }
+        </script>
+        <script type="module" src="{{ static_url('src/game.js') }}"></script>
     </head>
+
+    <body>
+        <textworld-game></textworld-game>
+    </body>
 </html>

@@ -20,12 +20,12 @@ test-ui:
 .PHONY: type
 type:
 	mypy
-	-$(NPM) --prefix=client run type
+	$(NPM) --prefix=client run type
 
 .PHONY: lint
 lint:
 	pylint $(PYLINTFLAGS) textworld
-	-$(NPM) --prefix=client run lint
+	$(NPM) --prefix=client run lint
 
 .PHONY: check
 check: type test test-client test-ui lint
