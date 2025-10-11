@@ -10,8 +10,12 @@ from threading import Thread
 from unittest import TestCase
 
 from selenium.webdriver import Firefox, Remote
+from selenium.webdriver.common.by import By
 from selenium.webdriver.common.options import ArgOptions
 from selenium.webdriver.remote.client_config import ClientConfig
+from selenium.webdriver.support.expected_conditions import presence_of_element_located
+# text_to_be_present_in_element
+from selenium.webdriver.support.wait import WebDriverWait
 
 from textworld.__main__ import main
 
@@ -55,4 +59,12 @@ class UITest(TestCase):
         self.addCleanup(self.browser.quit)
 
     def test(self) -> None:
-        pass
+        # OQ hostname for saucelabs?
+        self.browser.get('http://localhost:8080/')
+        self.assertEqual(self.browser.title, 'Text World')
+
+        wait = WebDriverWait(self.browser, 1)
+        h1 = wait.until(presence_of_element_located((By.CSS_SELECTOR, 'textworld-start-page h1')))
+            #text_to_be_present_in_element((By.CSS_SELECTOR, 'textworld-start-page h1'),
+            #                              'Text World'))
+        self.assertEqual(h1.text, 'Text World')
