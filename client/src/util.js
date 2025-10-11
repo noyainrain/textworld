@@ -1,5 +1,16 @@
 /** Various utilities. */
 
+/** Thrown when an assertion fails. */
+export class AssertionError extends Error {
+  /**
+   * @param {string} [message]
+   * @param {ErrorOptions} [options]
+   */
+  constructor(message = "Assertion failed", options = {}) {
+    super(message, options);
+  }
+}
+
 /** Dynamic template content. */
 export class Content {
   /**
