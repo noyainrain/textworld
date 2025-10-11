@@ -1,12 +1,12 @@
 /** Game UI logic. */
 
+import { makeStartPage } from "#start";
 import { AssertionError, Content, Router } from "#util";
 
 /** Game UI. */
 export class GameElement extends HTMLElement {
   #content = Content.render("#game-template");
-  /** @type {Router<HTMLElement>} */
-  #router = new Router([]);
+  #router = new Router([["^/$", makeStartPage]]);
 
   connectedCallback() {
     this.replaceChildren(...this.#content.nodes);
