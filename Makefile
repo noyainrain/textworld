@@ -14,6 +14,9 @@ test:
 test-client:
 	-$(NPM) --prefix=textworld/res/client run test
 
+test-ui:
+	$(PYTHON) $(PYTHONFLAGS) -m unittest textworld.tests.ui_test
+
 .PHONY: type
 type:
 	mypy
@@ -25,7 +28,7 @@ lint:
 	-$(NPM) --prefix=client run lint
 
 .PHONY: check
-check: type test test-client lint
+check: type test test-client test-ui lint
 
 .PHONY: dependencies
 dependencies:
