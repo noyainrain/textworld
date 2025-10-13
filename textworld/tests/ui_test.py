@@ -4,11 +4,14 @@ from asyncio import Runner
 from collections.abc import Callable
 from contextlib import chdir
 from functools import partial
+import os
 from tempfile import TemporaryDirectory
 from threading import Thread
 from unittest import TestCase
 
-from selenium.webdriver import Firefox
+from selenium.webdriver import Firefox, Remote
+from selenium.webdriver.common.options import ArgOptions
+from selenium.webdriver.remote.client_config import ClientConfig
 
 from textworld.__main__ import main
 
@@ -32,7 +35,23 @@ class UITest(TestCase):
         cancel: Callable[[], bool] = task.cancel
         self.addCleanup(loop.call_soon_threadsafe, cancel)
 
-        self.browser = Firefox()
+        if sauce_user := os.environ.get('SAUCE_USERNAME'):
+            sauce_key = os.environ.get('SAUCE_ACCESS_KEY')
+            region = os.environ.get('SAUCE_REGION')
+            url = f'https://ondemand.{region}.saucelabs.com/wd/hub'
+            client_config = ClientConfig(url, username=sauce_user, password=sauce_key)
+            options = ArgOptions()
+            # SELENIUM_BROWSER only for js, not really used by python lib
+            options.set_capability('browserName', os.environ.get('SAUCE_BROWSER', 'firefox'))
+            options.set_capability('platformName', os.environ.get('SAUCE_PLATFORM', 'linux'))
+            # name, build, tags
+            sauce_options = {'tunnelName': os.environ.get('SAUCE_TUNNEL_NAME'), 'name': self.id(),
+                             'build': os.environ.get('SAUCE_BUILD')}
+            options.set_capability('sauce:options', sauce_options)
+            # OQ how to not pass url twice?
+            self.browser = Remote(url, options=options, client_config=client_config)
+        else:
+            self.browser = Firefox()
         self.addCleanup(self.browser.quit)
 
     def test(self) -> None:
