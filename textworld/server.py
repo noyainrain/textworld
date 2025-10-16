@@ -26,6 +26,9 @@ class _RequestHandler(RequestHandler[_Settings]):
             getLogger(__name__).error('Unhandled error occurred on %s %s', self.request.method,
                                       self.request.uri, exc_info=(typ, value, tb))
 
+class _Worlds(RequestHandler[_Settings]):
+    pass
+
 class _Client(_RequestHandler):
     def get(self, *args: str, **kwargs: str) -> None:
         self.render('index.html')
@@ -75,7 +78,7 @@ def serve(*, host: str = '', port: int = 8080) -> Server:
     client_path = client_directory.__enter__()
     try:
         app: Application[_Settings] = Application(
-            [('/.*', _Client)], compress_response=True, log_function=_log,
+            [('/api/worlds', _Worlds), ('/.*', _Client)], compress_response=True, log_function=_log,
             template_path=client_path, static_path=client_path, url=url)
         http = app.listen(port, address=host, xheaders=True)
         return Server(http, client_directory)
