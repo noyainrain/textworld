@@ -3,14 +3,16 @@
 from __future__ import annotations
 
 from asyncio import CancelledError, Task
-from collections.abc import Awaitable, Mapping
+from collections.abc import Awaitable, Callable, Mapping
 from configparser import ConfigParser
 from importlib import resources
 from os import PathLike
-from typing import Generic, TypeVar
+import sqlite3
+from typing import Generic, Protocol, TypeVar
 
 import tornado
 
+T_co = TypeVar("T_co", covariant=True)
 M_co = TypeVar('M_co', bound=Mapping[str, object], covariant=True)
 
 async def cancel(task: Task[object]) -> None:
@@ -42,6 +44,35 @@ def read_config(*paths: PathLike[str] | str | tuple[str, str]) -> ConfigParser:
         else:
             config.read(path)
     return config
+
+RowFactory = Callable[[sqlite3.Cursor, tuple[object, ...]], T_co]
+
+class SupportsLenAndGetItem(Protocol):
+    # pylint: disable=missing-class-docstring
+    def __len__(self) -> int: ...
+    def __getitem__(self, key: int) -> object: ...
+
+class Cursor(sqlite3.Cursor, Generic[T_co]):
+    """Database cursor with row type annotations."""
+
+    row_factory: RowFactory[T_co] # type: ignore[assignment]
+
+    # Iter type is wrong / Any (and thus list()) because of
+    # https://github.com/python/mypy/issues/16492
+
+    def __next__(self) -> T_co:
+        row: T_co = super().__next__()
+        return row
+
+class Connection(sqlite3.Connection, Generic[T_co]):
+    """Database connection with row type annotations."""
+
+    row_factory: RowFactory[T_co]
+
+    def execute(self, sql: str,
+                parameters: SupportsLenAndGetItem | Mapping[str, object] = ()) -> Cursor[T_co]:
+        # pylint: disable=missing-function-docstring
+        return super().cursor(factory=Cursor).execute(sql, parameters)
 
 class HTTPServerRequest(tornado.httputil.HTTPServerRequest):
     """HTTP request with type annotations for connection details."""
