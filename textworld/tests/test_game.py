@@ -4,6 +4,7 @@ import logging
 
 from unittest import IsolatedAsyncioTestCase
 
+from textworld import context
 from textworld.game import Game
 
 class TestCase(IsolatedAsyncioTestCase):
@@ -15,3 +16,8 @@ class TestCase(IsolatedAsyncioTestCase):
 
     def setUp(self) -> None:
         self.game = Game()
+
+class GameTest(TestCase):
+    def test_init(self) -> None:
+        game = context.game.get(None)
+        self.assertEqual(game, self.game)
