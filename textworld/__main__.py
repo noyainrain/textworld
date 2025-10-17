@@ -7,6 +7,7 @@ import logging
 from logging import getLogger
 import sys
 
+from .game import Game
 from .server import serve
 from .util import read_config
 
@@ -21,6 +22,9 @@ async def main() -> int:
         print(f'⚠️ Failed to load the config file ({e})', file=sys.stderr)
         return 1
     options = config['textworld']
+
+    # Install the game in the current context
+    Game()
 
     try:
         server = serve(host=options['host'], port=int(options['port']))
