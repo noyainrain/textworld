@@ -17,4 +17,7 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
       - run: make dependencies dependencies-dev
-      - run: make check PYLINTFLAGS=--output-format=github
+      - run: make type
+      - run: make test
+      - run: make test-client
+      - run: make lint PYLINTFLAGS=--output-format=github
