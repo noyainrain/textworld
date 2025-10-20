@@ -21,3 +21,40 @@ jobs:
       - run: make test
       - run: make test-client
       - run: make lint PYLINTFLAGS=--output-format=github
+
+  test-ui:
+    needs: check
+    strategy:
+      matrix:
+        # [x] check workflow docs
+        # [x] check platforms
+        include:
+          - browser: chrome
+            platform: Windows 11 # OQ why windows here and not linux?
+          - browser: MicrosoftEdge
+            platform: Windows 11
+          - browser: firefox
+            platform: Linux
+          - browser: safari
+            platform: macOS 13
+    runs-on: ubuntu-latest
+    env:
+      SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
+      SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
+      SAUCE_REGION: us-west-1
+      SAUCE_TUNNEL_NAME: ${{ github.run_id }}-${{ matrix.browser }}
+      SAUCE_BROWSER: ${{ matrix.browser }}
+      SAUCE_PLATFORM: ${{ matrix.platform }}
+      SAUCE_BUILD: textworld-${{ github.run_number }}
+    steps:
+      - uses: actions/checkout@v5
+      # Work around https://github.com/saucelabs/sauce-connect-action/issues/101
+      - uses: saucelabs/sauce-connect-action@v3.0.0
+        with:
+          username: ${{ env.SAUCE_USERNAME }}
+          accessKey: ${{ env.SAUCE_ACCESS_KEY }}
+          region: ${{ env.SAUCE_REGION }}
+          tunnelName: ${{ env.SAUCE_TUNNEL_NAME }}
+          proxyLocalhost: allow
+      - run: make dependencies dependencies-dev
+      - run: make test-ui
