@@ -7,13 +7,26 @@ from collections.abc import Awaitable, Callable, Mapping
 from configparser import ConfigParser
 from importlib import resources
 from os import PathLike
+import random
 import sqlite3
+from string import ascii_lowercase
 from typing import Generic, Protocol, TypeVar
 
 import tornado
 
 T_co = TypeVar("T_co", covariant=True)
 M_co = TypeVar('M_co', bound=Mapping[str, object], covariant=True)
+
+def randstr(length: int = 16, *, characters: str = ascii_lowercase) -> str:
+    """Generate a random string with the given *length*.
+
+    The result is comprised of the given set of *characters*.
+    """
+    # To be suitable for IDs, the default length l is chosen such that
+    # 1 - exp(-n * (n - 1) / (2 * c ** l)) <= p, where the probability of collision p = 1‰, the
+    # presumed number of entities n = 1000000 and the size of the character set c = 26. (see
+    # https://en.wikipedia.org/wiki/Birthday_problem)
+    return ''.join(random.choice(characters) for _ in range(length))
 
 async def cancel(task: Task[object]) -> None:
     """Cancel a *task*."""

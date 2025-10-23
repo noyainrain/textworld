@@ -2,9 +2,16 @@
 
 from asyncio import create_task, sleep
 from importlib import resources
+from string import ascii_lowercase
 from unittest import IsolatedAsyncioTestCase, TestCase
 
-from textworld.util import cancel, read_config
+from textworld.util import cancel, randstr, read_config
+
+class RandstrTest(TestCase):
+    def test(self) -> None:
+        text = randstr()
+        self.assertEqual(len(text), 16)
+        self.assertLessEqual(set(text), set(ascii_lowercase))
 
 class CancelTest(IsolatedAsyncioTestCase):
     async def test(self) -> None:
