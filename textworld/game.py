@@ -4,6 +4,7 @@ import sqlite3
 from sqlite3 import Row
 
 from . import context
+from .update import update
 from .util import Connection
 
 class Game:
@@ -32,4 +33,5 @@ class Game:
         if not self._db:
             self._db = sqlite3.connect(self.database_url, factory=Connection)
             self._db.row_factory = Row
+            update(self._db)
         return self._db
