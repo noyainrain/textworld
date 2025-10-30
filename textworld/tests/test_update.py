@@ -17,4 +17,4 @@ class UpdateTest(TestCase):
         update(db)
         rows = db.execute('SELECT * FROM sqlite_schema')
         tables: list[Row] = list(rows)
-        self.assertFalse(tables)
+        self.assertTrue(tables)

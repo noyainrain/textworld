@@ -7,4 +7,4 @@ from .util import Connection
 def update(db: Connection[Row]) -> None:
     """Plumbing: Update the database *db*."""
     with db:
-        pass
+        db.execute('CREATE TABLE IF NOT EXISTS players (id PRIMARY KEY, create_time)')

@@ -27,4 +27,4 @@ class GameTest(TestCase):
         db = self.game.transaction()
         rows = db.execute('SELECT * FROM sqlite_schema')
         tables: list[Row] = list(rows)
-        self.assertFalse(tables)
+        self.assertTrue(tables)
