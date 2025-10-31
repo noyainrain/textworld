@@ -12,6 +12,7 @@ class UpdateTest(TestCase):
     def test(self) -> None:
         db = sqlite3.connect(':memory:', factory=Connection)
         db.row_factory = Row
+        db.execute('PRAGMA foreign_keys = 1')
         update(db)
 
         update(db)

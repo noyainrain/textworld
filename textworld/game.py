@@ -33,5 +33,6 @@ class Game:
         if not self._db:
             self._db = sqlite3.connect(self.database_url, factory=Connection)
             self._db.row_factory = Row
+            self._db.execute('PRAGMA foreign_keys = 1')
             update(self._db)
         return self._db
