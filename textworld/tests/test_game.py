@@ -23,6 +23,8 @@ class TestCase(IsolatedAsyncioTestCase):
         def now() -> datetime:
             return self._now
         self.game = Game(database_url=':memory:', now=now)
+        self.device = self.game.authenticate()
+        self.player = self.device.get_player()
 
 class GameTest(TestCase):
     def test_init(self) -> None:
