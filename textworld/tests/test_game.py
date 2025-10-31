@@ -2,6 +2,7 @@
 
 import logging
 
+from datetime import UTC, datetime
 from sqlite3 import Row
 from unittest import IsolatedAsyncioTestCase
 
@@ -16,7 +17,12 @@ class TestCase(IsolatedAsyncioTestCase):
         logging.basicConfig()
 
     def setUp(self) -> None:
-        self.game = Game(database_url=':memory:')
+        self._now = datetime(2025, 9, 18, tzinfo=UTC)
+        # OQ should it be public like in streamfarer? why, we can always get it with game.now()?
+        # (maybe the idea was to mirror tick...)
+        def now() -> datetime:
+            return self._now
+        self.game = Game(database_url=':memory:', now=now)
 
 class GameTest(TestCase):
     def test_init(self) -> None:
