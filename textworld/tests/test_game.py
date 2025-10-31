@@ -29,6 +29,13 @@ class GameTest(TestCase):
         game = context.game.get(None)
         self.assertEqual(game, self.game)
 
+    def test_authenticate_without_token(self) -> None:
+        device = self.game.authenticate()
+        self.assertEqual(device, self.game.get_device(device.id))
+        self.assertEqual(device.create_time, self.game.now())
+        player = device.get_player()
+        self.assertEqual(player.create_time, self.game.now())
+
     def test_transaction(self) -> None:
         db = self.game.transaction()
         rows = db.execute('SELECT * FROM sqlite_schema')
