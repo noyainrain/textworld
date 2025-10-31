@@ -1,5 +1,9 @@
 """Game logic."""
 
+from collections.abc import Callable
+from datetime import UTC, datetime
+from functools import partial
+
 import sqlite3
 from sqlite3 import Row
 
@@ -15,10 +19,16 @@ class Game:
     .. attribute:: database_url
 
        ...
+
+    .. attribute:: now
+
+       Function that returns the current UTC date and time.
     """
 
-    def __init__(self, *, database_url: str = 'textworld.db') -> None:
+    def __init__(self, *, database_url: str = 'textworld.db',
+                 now: Callable[[], datetime] = partial(datetime.now, UTC)) -> None:
         self.database_url = database_url
+        self.now = now
         self._db: Connection[Row] | None = None
 
         try:
