@@ -77,7 +77,7 @@ class Game:
                 (randstr(), now, token_urlsafe(), player_id))
             return Device.model_validate(dict(next(rows)))
 
-    def authenticate(self) -> Device:
+    def authenticate(self, token: str | None = None) -> Device:
         """Authenticate a player device with *token*.
 
         Without a token, implicit auth, creating a guest player.
@@ -86,9 +86,17 @@ class Game:
 		Authenticate a player with *token*.
 
         If authentication fails, a :exc:`LookupError` is raised.
-
         """
-        return self._sign_in()
+        if token is None:
+            device = self._sign_in()
+        else:
+            with self.transaction() as db:
+                rows = db.execute('SELECT * FROM devices WHERE token = ?', (token, ))
+                try:
+                    device = Device.model_validate(dict(next(rows)))
+                except StopIteration:
+                    raise LookupError(token) from None
+        return device
 
     def transaction(self) -> Connection[Row]:
         """Plumbing: ..."""

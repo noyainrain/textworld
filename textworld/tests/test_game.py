@@ -31,6 +31,14 @@ class GameTest(TestCase):
         game = context.game.get(None)
         self.assertEqual(game, self.game)
 
+    def test_authenticate(self) -> None:
+        device = self.game.authenticate(self.device.token)
+        self.assertEqual(device, self.device)
+
+    def test_authenticate_invalid_token(self) -> None:
+        with self.assertRaises(LookupError):
+            self.game.authenticate('foo')
+
     def test_authenticate_without_token(self) -> None:
         device = self.game.authenticate()
         self.assertEqual(device, self.game.get_device(device.id))
