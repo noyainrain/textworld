@@ -86,6 +86,9 @@ class Game:
 		Authenticate a player with *token*.
 
         If authentication fails, a :exc:`LookupError` is raised.
+
+        TODO
+        The authenticated player is set as the current :data:`context.player`.
         """
         if token is None:
             device = self._sign_in()
@@ -96,6 +99,8 @@ class Game:
                     device = Device.model_validate(dict(next(rows)))
                 except StopIteration:
                     raise LookupError(token) from None
+
+        context.player.set(device.get_player())
         return device
 
     def transaction(self) -> Connection[Row]:

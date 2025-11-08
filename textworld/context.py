@@ -11,6 +11,8 @@ from contextvars import ContextVar
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
+    from .core import Player
     from .game import Game
 
 game: ContextVar[Game] = ContextVar('game')
+player: ContextVar[Player] = ContextVar('player')
