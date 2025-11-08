@@ -1,5 +1,6 @@
 """Command-line interface."""
 
+import asyncio
 from asyncio import CancelledError, Event
 import logging
 from logging import getLogger
@@ -30,3 +31,6 @@ async def main() -> int:
     # Treat cancellation as usage error
     print('canceled', file=sys.stderr)
     return 2
+
+if __name__ == '__main__':
+    sys.exit(asyncio.run(main()))

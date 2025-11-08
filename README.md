@@ -21,6 +21,14 @@ To install all dependencies, run:
 make dependencies
 ```
 
+## Running Text World
+
+To run Text World, use:
+
+```sh
+python3 -m textworld
+```
+
 ## Contributors
 
 * Sven Pfaller &lt;sven@inrain.org>
