@@ -8,6 +8,9 @@
         "test": "wtr",
         "lint": "eslint"
     },
+    "dependencies": {
+        "p5": "^2.1"
+    },
     "devDependencies": {
         "typescript": "^5.9",
         "@web/test-runner": "^0.20",
