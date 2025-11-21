@@ -1,12 +1,12 @@
 import p5 from "p5";
-import { Circle, px } from "#sticky";
+import { Circle, body, px } from "#sticky";
 
 new p5((p) => {
   const target = 1000 / 60;
   // const size = 360 / 8;
-  const size = px(360 / 8 * 2);
+  const size = px(360 / 8);
   // const model = new Circle(640, 360);
-  const model = new Circle(px(640 * 2), px(360 * 2));
+  const model = new Circle(px(640), px(360));
   /** @type {number[]} */
   const times = [];
   /** @type {number[]} */
@@ -56,7 +56,7 @@ new p5((p) => {
       }
     } else {
       for (let i = 0; i < diff; i++) {
-        const shape = new Circle(size, size);
+        const shape = new Circle(size, size, body(p.random(), p.random()));
         model.links.push(shape);
         // model.links.unshift(shape)
         shape.base = model;

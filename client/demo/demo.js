@@ -1,10 +1,21 @@
 import p5 from "p5";
-import { Circle, Triangle, px } from "#sticky";
+import { Circle, Triangle, body, h, w } from "#sticky";
 
 new p5((p) => {
   // Cat TODO
   const model = new Circle(
-    px(180), px(180), new Triangle(px(90), px(90)), new Circle(px(90), px(90)),
+    h(1 / 2), 1 / 2, body(1 / 2, 1 / 2),
+    // Ear
+    new Triangle(1 / 4, 1 / 4, body(1 / 2, 1 / 4)),
+    // Eye
+    new Circle(
+      1 / 4, 1 / 4 * 2 / 3, body(1 / 4, 1 / 2),
+      new Circle(1 / 2, w(1 / 2), body(1 / 2, 1 / 2)),
+    ),
+    new Circle(
+      1 / 4, 1 / 4 * 2 / 3, body(3 / 4, 1 / 2),
+      new Circle(1 / 2, w(1 / 2), body(1 / 2, 1 / 2)),
+    ),
   );
 
   p.setup = () => {

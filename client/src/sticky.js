@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars
 import p5 from "p5";
 
 /** ... */
@@ -55,7 +54,7 @@ export class WidthCoordinate extends Coordinate {
     // 50%
     // 50%
     // -> canvas-width * 50% * 50%
-    return this.value * shape.renderWidth;
+    return this.value * (shape.base ? shape.base.renderWidth : (shape.p?.width ?? 0));
   }
 }
 
@@ -72,7 +71,7 @@ export function w(value) {
 export class HeightCoordinate extends Coordinate {
   /** @param {Shape} shape */
   px(shape) {
-    return this.value * shape.renderHeight;
+    return this.value * (shape.base ? shape.base.renderHeight : (shape.p?.height ?? 0));
   }
 }
 
@@ -83,6 +82,38 @@ export class HeightCoordinate extends Coordinate {
  */
 export function h(value) {
   return new HeightCoordinate(value);
+}
+
+/** TODO. */
+export class Body {
+  /**
+   * @param {Coordinate | number} x
+   * @param {Coordinate | number} y
+   */
+  constructor(x, y) {
+    this.x = typeof x === "number" ? w(x) : x;
+    this.y = typeof y === "number" ? h(y) : y;
+  }
+
+  /**
+   * @param {Shape} shape - ...
+   * @returns {p5.Vector}
+   */
+  px(shape) {
+    const x = this.x.px(shape);
+    const y = this.y.px(shape);
+    return shape.base
+      ? new p5.Vector(x - (shape.base.renderWidth / 2), y - (shape.base.renderHeight / 2))
+      : new p5.Vector(x, y);
+  }
+}
+
+/**
+ * @param {number} x
+ * @param {number} y
+ */
+export function body(x, y) {
+  return new Body(x, y);
 }
 
 /**
@@ -101,6 +132,11 @@ export class Shape {
   height;
   /**
    * TODO.
+   * @type {Body}
+   */
+  at;
+  /**
+   * TODO.
    * @type {?Shape}
    */
   base = null;
@@ -109,6 +145,11 @@ export class Shape {
    * @type {Shape[]}
    */
   links;
+  /**
+   * ...
+   * @type {?p5}
+   */
+  p = null;
   /**
    * ...
    * @type {number}
@@ -123,11 +164,14 @@ export class Shape {
   /**
    * @param {Coordinate | number} width - OQ
    * @param {Coordinate | number} height - OQ
+   * @param {Body} at
+   * @param {Shape[]} links
    * @param {...Shape} links
    */
-  constructor(width, height, ...links) {
+  constructor(width, height, at = body(0.5, 0.5), ...links) {
     this.width = typeof width === "number" ? w(width) : width;
     this.height = typeof height === "number" ? h(height) : height;
+    this.at = at;
     this.links = links;
     for (const link of links) {
       link.base = this;
@@ -139,13 +183,19 @@ export class Shape {
    * @param {p5} p - p5.js sketch.
    */
   render(p) {
+    this.p = p;
     this.renderWidth = this.width.px(this);
     this.renderHeight = this.height.px(this);
+    this.renderAt = this.at.px(this);
+    p.push();
+    p.translate(this.renderAt);
+
     this.renderShape(p);
 
     for (const link of this.links) {
       link.render(p);
     }
+    p.pop();
   }
 
   /**
