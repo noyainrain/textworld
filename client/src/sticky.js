@@ -56,6 +56,16 @@ export class Shape {
    */
   height;
   /**
+   * TODO.
+   * @type {?Shape}
+   */
+  base = null;
+  /**
+   * TODO.
+   * @type {Shape[]}
+   */
+  links;
+  /**
    * ...
    * @type {number}
    */
@@ -69,10 +79,15 @@ export class Shape {
   /**
    * @param {Coordinate} width - OQ
    * @param {Coordinate} height - OQ
+   * @param {Shape[]} links
    */
-  constructor(width, height) {
+  constructor(width, height, links) {
     this.width = width;
     this.height = height;
+    this.links = links;
+    for (const link of links) {
+      link.base = this;
+    }
   }
 
   /**
@@ -83,6 +98,10 @@ export class Shape {
     this.renderWidth = this.width.px();
     this.renderHeight = this.height.px();
     this.renderShape(p);
+
+    for (const link of this.links) {
+      link.render(p);
+    }
   }
 
   /**
@@ -102,9 +121,10 @@ export class Circle extends Shape {
   /**
    * @param {Coordinate} width - OQ
    * @param {Coordinate} height - OQ
+   * @param {...Shape} links
    */
-  constructor(width, height) {
-    super(width, height);
+  constructor(width, height, ...links) {
+    super(width, height, links);
   }
 
   /**
