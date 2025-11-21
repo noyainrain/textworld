@@ -204,14 +204,6 @@ export class Body extends Position {
   }
 }
 
-/**
- * @param {number} x
- * @param {number} y
- */
-export function body(x, y) {
-  return new Body(x, y);
-}
-
 // getEdges() -> curves (basically every curve is an axis)
 // getCartesianCoordinateSystem() -> origin, xAxis, yAxis
 // getPolarCoordinateSystem() -> pole, axis
@@ -272,6 +264,120 @@ export function edge(index, offset = 1 / 2, crossOffset = 0) {
 }
 
 /**
+ * @param {number} progress
+ */
+function ease(progress) {
+  return (1 - Math.cos(progress * Math.PI)) / 2;
+}
+
+/**
+ * @template T
+ */
+export class Value {
+  /**
+   * @param {?Shape} shape
+   * @returns {T}
+   */
+  // eslint-disable-next-line no-unused-vars
+  evaluate(shape) {
+    throw new Error("implement!!");
+  }
+}
+
+/**
+ * @template T
+ * @extends {Value<T>}
+ */
+export class ConstValue extends Value {
+  /**
+   * @param {T} value
+   */
+  constructor(value) {
+    super();
+    this.value = value;
+  }
+
+  evaluate() {
+    return this.value;
+  }
+}
+
+/**
+ * @extends {Value<Body>}
+ */
+export class BodyValue extends Value {
+  /**
+   * @param {Value<Coordinate | number> | Coordinate | number} x
+   * @param {Value<Coordinate | number> | Coordinate | number} y
+   */
+  constructor(x, y) {
+    super();
+    this.x = x instanceof Value ? x : new ConstValue(x);
+    this.y = y instanceof Value ? y : new ConstValue(y);
+  }
+
+  /**
+   * @param {Shape} shape
+   */
+  evaluate(shape) {
+    return new Body(this.x.evaluate(shape), this.y.evaluate(shape));
+  }
+}
+
+/**
+ * @param {Value<Coordinate | number> | Coordinate | number} x
+ * @param {Value<Coordinate | number> | Coordinate | number} y
+ */
+export function body(x, y) {
+  return new BodyValue(x, y);
+}
+
+/**
+ * @extends Value<number>
+ */
+export class Tween extends Value {
+  /**
+   * @param {number} from
+   * @param {number} to
+   * @param {number} duration
+   * @param {boolean} yoyo
+   */
+  constructor(from, to, duration, yoyo = false) {
+    super();
+    this.from = from;
+    this.to = to;
+    this.duration = duration;
+    this.yoyo = yoyo;
+  }
+
+  /**
+   * @param {Shape} shape
+   * @returns {number}
+   */
+  evaluate(shape) {
+    let p = ((shape.p?.millis() ?? 0) / 1000) / this.duration % 1;
+    if (this.yoyo) {
+      p = p * 2;
+      p = p >= 1 ? 2 - p : p;
+    }
+    const progress = ease(p);
+    const v = this.from + (this.to - this.from) * progress;
+    // console.log("v", (canvas.millis() / 1000).toFixed(2), v);
+    return v;
+  }
+}
+
+/**
+ * @param {number} from
+ * @param {number} to
+ * @param {number} duration
+ * @param {boolean} yoyo
+ */
+export function tween(from, to, duration, yoyo = false) {
+  return new Tween(from, to, duration, yoyo);
+}
+
+/**
  * Basic geometric shape.
  */
 export class Shape {
@@ -287,7 +393,7 @@ export class Shape {
   height;
   /**
    * TODO.
-   * @type {Position}
+   * @type {Value<Position>}
    */
   at;
   /**
@@ -344,7 +450,7 @@ export class Shape {
   /**
    * @param {Coordinate | number} width - OQ
    * @param {Coordinate | number} height - OQ
-   * @param {Position} [at]
+   * @param {Value<Position> | Position} [at]
    * @param {Object} [options]
    * @param {number} [options.orientation]
    * @param {?string | AUTO} [options.stroke]
@@ -360,7 +466,7 @@ export class Shape {
   ) {
     this.width = typeof width === "number" ? w(width) : width;
     this.height = typeof height === "number" ? h(height) : height;
-    this.at = at;
+    this.at = at instanceof Value ? at : new ConstValue(at);
     this.orientation = orientation;
     this.stroke = stroke;
     this.fill = fill;
@@ -380,8 +486,9 @@ export class Shape {
     this.p = p;
     this.renderWidth = this.width.px(this);
     this.renderHeight = this.height.px(this);
-    this.renderAt = this.at.px(this);
-    this.renderOrientation = this.orientation * 2 * Math.PI + this.at.angle(this);
+    const at = this.at.evaluate(this);
+    this.renderAt = at.px(this);
+    this.renderOrientation = this.orientation * 2 * Math.PI + at.angle(this);
 
     p.push();
     if (this.stroke !== AUTO) {

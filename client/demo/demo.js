@@ -1,5 +1,5 @@
 import p5 from "p5";
-import { Circle, Triangle, body, edge, h, px } from "#sticky";
+import { Circle, Triangle, body, edge, h, px, tween } from "#sticky";
 
 new p5((p) => {
   const verbose = "verbose" in p.getURLParams();
@@ -21,7 +21,8 @@ new p5((p) => {
 
     // Cat
     new Circle(
-      h(1 / 2), 1 / 2, body(1 / 2, 1 / 2), { stroke: "pink", fill: "black" },
+      h(1 / 2), 1 / 2, body(1 / 2, tween(1 / 2 - 1 / 2 / 16 / 2, 1 / 2 + 1 / 2 / 16 / 2, 2, true)),
+      { stroke: "pink", fill: "black" },
       // Tail
       new Circle(
         1 / 16, 1, body(1 / 2, 1 - 1 / 16 / 2),
