@@ -145,6 +145,11 @@ export class Shape {
   stroke;
   /**
    * TODO.
+   * @type {?string | AUTO}
+   */
+  fill;
+  /**
+   * TODO.
    * @type {?Shape}
    */
   base = null;
@@ -175,13 +180,15 @@ export class Shape {
    * @param {Body} [at]
    * @param {Object} [options]
    * @param {?string | AUTO} [options.stroke]
+   * @param {?string | AUTO} [options.fill]
    * @param {...Shape} links
    */
-  constructor(width, height, at = body(0.5, 0.5), { stroke = AUTO } = {}, ...links) {
+  constructor(width, height, at = body(0.5, 0.5), { stroke = AUTO, fill = AUTO } = {}, ...links) {
     this.width = typeof width === "number" ? w(width) : width;
     this.height = typeof height === "number" ? h(height) : height;
     this.at = at;
     this.stroke = stroke;
+    this.fill = fill;
     this.links = links;
     for (const link of links) {
       link.base = this;
@@ -200,6 +207,9 @@ export class Shape {
     p.push();
     if (this.stroke !== AUTO) {
       p.stroke(this.stroke ?? "transparent");
+    }
+    if (this.fill !== AUTO) {
+      p.fill(this.fill ?? "transparent");
     }
     p.translate(this.renderAt);
 

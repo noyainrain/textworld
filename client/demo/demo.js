@@ -10,11 +10,11 @@ new p5((p) => {
     // Eye
     new Circle(
       1 / 4, 1 / 4 * 2 / 3, body(1 / 4, 1 / 2), {},
-      new Circle(1 / 2, w(1 / 2), body(1 / 2, 1 / 2)),
+      new Circle(1 / 2, w(1 / 2), body(1 / 2, 1 / 2), { fill: "pink" }),
     ),
     new Circle(
       1 / 4, 1 / 4 * 2 / 3, body(3 / 4, 1 / 2), {},
-      new Circle(1 / 2, w(1 / 2), body(1 / 2, 1 / 2)),
+      new Circle(1 / 2, w(1 / 2), body(1 / 2, 1 / 2), { fill: "pink" }),
     ),
   );
 

@@ -1,6 +1,26 @@
 import p5 from "p5";
 import { Circle, body, px } from "#sticky";
 
+const PALETTE = {
+  black: "#000",
+  blue: "#00a",
+  green: "#0a0",
+  cyan: "#0aa",
+  red: "#a00",
+  magenta: "#a0a",
+  brown: "#a50",
+  lightGray: "#aaa",
+  darkGray: "#555",
+  lightBlue: "#55f",
+  lightGreen: "#5f5",
+  lightCyan: "#5ff",
+  lightRed: "#f55",
+  lightMagenta: "#f5f",
+  yellow: "#ff5",
+  white: "#fff",
+};
+const palette = Object.values(PALETTE);
+
 new p5((p) => {
   const target = 1000 / 60;
   // const size = 360 / 8;
@@ -56,7 +76,14 @@ new p5((p) => {
       }
     } else {
       for (let i = 0; i < diff; i++) {
-        const shape = new Circle(size, size, body(p.random(), p.random()));
+        const color = Math.trunc(p.random(0, 8));
+        const shape = new Circle(
+          size, size, body(p.random(), p.random()),
+          {
+            stroke: palette[color],
+            fill: palette[color + 8],
+          },
+        );
         model.links.push(shape);
         // model.links.unshift(shape)
         shape.base = model;
