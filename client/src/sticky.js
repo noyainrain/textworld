@@ -1,5 +1,8 @@
 import p5 from "p5";
 
+/** TODO. */
+export const AUTO = Symbol();
+
 /** ... */
 export class Coordinate {
   /**
@@ -137,6 +140,11 @@ export class Shape {
   at;
   /**
    * TODO.
+   * @type {?string | AUTO}
+   */
+  stroke;
+  /**
+   * TODO.
    * @type {?Shape}
    */
   base = null;
@@ -164,14 +172,16 @@ export class Shape {
   /**
    * @param {Coordinate | number} width - OQ
    * @param {Coordinate | number} height - OQ
-   * @param {Body} at
-   * @param {Shape[]} links
+   * @param {Body} [at]
+   * @param {Object} [options]
+   * @param {?string | AUTO} [options.stroke]
    * @param {...Shape} links
    */
-  constructor(width, height, at = body(0.5, 0.5), ...links) {
+  constructor(width, height, at = body(0.5, 0.5), { stroke = AUTO } = {}, ...links) {
     this.width = typeof width === "number" ? w(width) : width;
     this.height = typeof height === "number" ? h(height) : height;
     this.at = at;
+    this.stroke = stroke;
     this.links = links;
     for (const link of links) {
       link.base = this;
@@ -188,6 +198,9 @@ export class Shape {
     this.renderHeight = this.height.px(this);
     this.renderAt = this.at.px(this);
     p.push();
+    if (this.stroke !== AUTO) {
+      p.stroke(this.stroke ?? "transparent");
+    }
     p.translate(this.renderAt);
 
     this.renderShape(p);
