@@ -150,6 +150,16 @@ export class Shape {
   fill;
   /**
    * TODO.
+   * @type {number}
+   */
+  start;
+  /**
+   * TODO.
+   * @type {number}
+   */
+  end;
+  /**
+   * TODO.
    * @type {?Shape}
    */
   base = null;
@@ -181,14 +191,21 @@ export class Shape {
    * @param {Object} [options]
    * @param {?string | AUTO} [options.stroke]
    * @param {?string | AUTO} [options.fill]
+   * @param {number} [options.start]
+   * @param {number} [options.end]
    * @param {...Shape} links
    */
-  constructor(width, height, at = body(0.5, 0.5), { stroke = AUTO, fill = AUTO } = {}, ...links) {
+  constructor(
+    width, height, at = body(0.5, 0.5), { stroke = AUTO, fill = AUTO, start = 0, end = -0 } = {},
+    ...links
+  ) {
     this.width = typeof width === "number" ? w(width) : width;
     this.height = typeof height === "number" ? h(height) : height;
     this.at = at;
     this.stroke = stroke;
     this.fill = fill;
+    this.start = start;
+    this.end = end;
     this.links = links;
     for (const link of links) {
       link.base = this;
@@ -231,10 +248,90 @@ export class Shape {
   }
 }
 
+class Polygon extends Shape {
+  /** @type {p5.Vector[]} */
+  vertices = [];
+  /** @type {?p5.Vector[]} */
+  #points = null;
+  /** @type {boolean} */
+  #closed = false;
+
+  /**
+   * @param {p5} p
+   */
+  renderShape(p) {
+    if (!this.#points) {
+      const startIndex = Math.trunc(this.start);
+      const startOffset = this.start - startIndex;
+      const end = Object.is(this.end, -0) ? this.vertices.length : this.end;
+      const endIndex = Math.trunc(end);
+      const endOffset = end - endIndex;
+
+      this.#points = [];
+      this.#points.push(this.getEdgePoint(startIndex, startOffset));
+      // console.log("PARAMS", startIndex, startOffset, endIndex, endOffset);
+      // console.log("INITIAL POINT", this.#points[0]);
+
+      // const limit = (endIndex + 1) % this.#vertices.length;
+      // let i = (startIndex + 1) % this.#vertices.length;
+
+      // console.log("STARTLIMIT", (startIndex + 1) % this.vertices.length, endIndex % this.vertices.length);
+      for (
+        let i = startIndex + 1;
+        i < endIndex + Math.ceil(endOffset);
+        i++
+        // let i = (startIndex + 1) % this.vertices.length;
+        // i !== (endIndex + 1) % this.vertices.length;
+        // i = i + 1
+      ) {
+      // while (i !== limit) {
+        // console.log("COLLECTION POINT", i);
+        const point = this.vertices[i % this.vertices.length];
+        if (!point) {
+          throw new Error("Assertion failed");
+        }
+        this.#points.push(point);
+        // i = (i + 1) % this.#vertices.length;
+      }
+      if (
+        (startIndex % this.vertices.length) === (endIndex % this.vertices.length)
+        && startOffset === endOffset
+      ) {
+        this.#closed = true;
+      } else {
+        this.#points.push(this.getEdgePoint(endIndex, endOffset));
+        this.#closed = false;
+      }
+      // console.log("TRI POINTS", this.#points, this.#closed);
+    }
+
+    p.beginShape();
+    for (const point of this.#points) {
+      p.vertex(point.x, point.y);
+    }
+    p.endShape(this.#closed ? p.CLOSE : undefined);
+  }
+
+  /**
+   * @param {number} index
+   * @param {number} offset
+   * @returns {p5.Vector}
+   */
+  getEdgePoint(index, offset) {
+    const p1 = this.vertices[index % this.vertices.length];
+    const p2 = this.vertices[(index + 1) % this.vertices.length];
+    if (!(p1 && p2)) {
+      throw new Error("Assertion failed");
+    }
+    // console.log("GEP", p1, p2, offset);
+    return p5.Vector.sub(p2, p1).mult(offset).add(p1);
+  }
+}
+
 /**
  * Triangle.
  */
-export class Triangle extends Shape {
+export class Triangle extends Polygon {
   /**
    * @param {p5} p
    */
@@ -244,7 +341,15 @@ export class Triangle extends Shape {
     // B .---. A
     const wh = this.renderWidth / 2;
     const hh = this.renderHeight / 2;
-    p.triangle(wh, hh, -wh, hh, 0, -hh);
+    // p.triangle(wh, hh, -wh, hh, 0, -hh);
+
+    // if (this.renderWidth !== this.cacheWidth && this.renderHeight !== this.cacheHeight) {
+    this.vertices = [
+      new p5.Vector(wh, hh),
+      new p5.Vector(-wh, hh),
+      new p5.Vector(0, -hh),
+    ];
+    super.renderShape(p);
   }
 }
 
@@ -256,6 +361,9 @@ export class Circle extends Shape {
    * @param {p5} p
    */
   renderShape(p) {
-    p.ellipse(0, 0, this.renderWidth, this.renderHeight);
+    const end = Object.is(this.end, -0) ? 1 : this.end;
+    p.arc(
+      0, 0, this.renderWidth, this.renderHeight, this.start * 2 * Math.PI, end * 2 * Math.PI,
+    );
   }
 }

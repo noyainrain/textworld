@@ -4,9 +4,9 @@ import { Circle, Triangle, body, h, w } from "#sticky";
 new p5((p) => {
   // Cat TODO
   const model = new Circle(
-    h(1 / 2), 1 / 2, body(1 / 2, 1 / 2), { stroke: "pink" },
+    h(1 / 2), 1 / 2, body(1 / 2, 1 / 2), { stroke: "pink", fill: "black" },
     // Ear
-    new Triangle(1 / 4, 1 / 4, body(1 / 2, 1 / 4)),
+    new Triangle(1 / 4, 1 / 4, body(1 / 2, 1 / 4), { start: 1, end: 3 }),
     // Eye
     new Circle(
       1 / 4, 1 / 4 * 2 / 3, body(1 / 4, 1 / 2), {},
@@ -15,6 +15,12 @@ new p5((p) => {
     new Circle(
       1 / 4, 1 / 4 * 2 / 3, body(3 / 4, 1 / 2), {},
       new Circle(1 / 2, w(1 / 2), body(1 / 2, 1 / 2), { fill: "pink" }),
+    ),
+    // Mouth
+    new Circle(
+      1 / 8, 1 / 8, body(1 / 2, 5 / 6), { fill: "pink" },
+      new Circle(1, 1, body(0, 0), { fill: "black", end: 1 / 2 }),
+      new Circle(1, 1, body(1, 0), { fill: "black", end: 1 / 2 }),
     ),
   );
 
