@@ -68,6 +68,23 @@ export function w(value) {
   return new WidthCoordinate(value);
 }
 
+/** ... */
+export class HeightCoordinate extends Coordinate {
+  /** @param {Shape} shape */
+  px(shape) {
+    return this.value * shape.renderHeight;
+  }
+}
+
+/**
+ * ...
+ * @param {number} value
+ * @returns {HeightCoordinate}
+ */
+export function h(value) {
+  return new HeightCoordinate(value);
+}
+
 /**
  * Basic geometric shape.
  */

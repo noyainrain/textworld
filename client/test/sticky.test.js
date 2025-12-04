@@ -1,9 +1,9 @@
 import { expect } from "chai";
 import p5 from "p5";
-import { Circle, px, w } from "#sticky";
+import { Circle, h, px, w } from "#sticky";
 
 /** @type {[(value: number) => import("#sticky").Coordinate, number, number][]} */
-const data = [[px, 7, 7], [w, 1 / 2, 320]];
+const data = [[px, 7, 7], [w, 1 / 2, 320], [h, 1 / 2, 180]];
 
 for (const [unit, value, result] of data) {
   describe(unit.name, function () {
