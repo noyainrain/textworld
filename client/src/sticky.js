@@ -18,9 +18,11 @@ export class Coordinate {
 
   /**
    * ...
+   * @param {Shape} shape - ...
    * @returns {number}
    */
-  px() {
+  // eslint-disable-next-line no-unused-vars
+  px(shape) {
     throw new Error("abstract");
   }
 }
@@ -39,6 +41,31 @@ export class PixelCoordinate extends Coordinate {
  */
 export function px(value) {
   return new PixelCoordinate(value);
+}
+
+/** ... */
+export class WidthCoordinate extends Coordinate {
+  /** @param {Shape} shape */
+  px(shape) {
+    // shape.width.evaluate()
+    // shape.base.width.evaluate()
+    // shape.base.base.width.evaluate()
+    // ...
+    // canvas-width
+    // 50%
+    // 50%
+    // -> canvas-width * 50% * 50%
+    return this.value * shape.renderWidth;
+  }
+}
+
+/**
+ * ...
+ * @param {number} value
+ * @returns {WidthCoordinate}
+ */
+export function w(value) {
+  return new WidthCoordinate(value);
 }
 
 /**
@@ -95,8 +122,8 @@ export class Shape {
    * @param {p5} p - p5.js sketch.
    */
   render(p) {
-    this.renderWidth = this.width.px();
-    this.renderHeight = this.height.px();
+    this.renderWidth = this.width.px(this);
+    this.renderHeight = this.height.px(this);
     this.renderShape(p);
 
     for (const link of this.links) {
