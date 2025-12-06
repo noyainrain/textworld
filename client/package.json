@@ -12,6 +12,7 @@
         "typescript": "^5.9",
         "@web/test-runner": "^0.20",
         "@web/test-runner-selenium": "^0.5",
+        "@web/dev-server-import-maps": "^0.2",
         "selenium-webdriver": "^4.36",
         "chai": "^6.2",
         "eslint": "^9.37",

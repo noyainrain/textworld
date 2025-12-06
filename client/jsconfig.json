@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "module": "nodenext",
+        "module": "preserve",
         "checkJs": true,
         "target": "es2024",
         "strict": true,
