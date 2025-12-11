@@ -123,9 +123,9 @@ export class Shape {
   /**
    * @param {Coordinate | number} width - OQ
    * @param {Coordinate | number} height - OQ
-   * @param {Shape[]} links
+   * @param {...Shape} links
    */
-  constructor(width, height, links) {
+  constructor(width, height, ...links) {
     this.width = typeof width === "number" ? w(width) : width;
     this.height = typeof height === "number" ? h(height) : height;
     this.links = links;
@@ -159,18 +159,26 @@ export class Shape {
 }
 
 /**
+ * Triangle.
+ */
+export class Triangle extends Shape {
+  /**
+   * @param {p5} p
+   */
+  renderShape(p) {
+    //     ^ C
+    //    / \
+    // B .---. A
+    const wh = this.renderWidth / 2;
+    const hh = this.renderHeight / 2;
+    p.triangle(wh, hh, -wh, hh, 0, -hh);
+  }
+}
+
+/**
  * Circle.
  */
 export class Circle extends Shape {
-  /**
-   * @param {Coordinate | number} width - OQ
-   * @param {Coordinate | number} height - OQ
-   * @param {...Shape} links
-   */
-  constructor(width, height, ...links) {
-    super(width, height, links);
-  }
-
   /**
    * @param {p5} p
    */

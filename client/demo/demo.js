@@ -1,9 +1,11 @@
 import p5 from "p5";
-import { Circle, px } from "#sticky";
+import { Circle, Triangle, px } from "#sticky";
 
 new p5((p) => {
   // Cat TODO
-  const model = new Circle(px(180), px(180), new Circle(px(90), px(90)));
+  const model = new Circle(
+    px(180), px(180), new Triangle(px(90), px(90)), new Circle(px(90), px(90)),
+  );
 
   p.setup = () => {
     p.createCanvas(640, 360);
