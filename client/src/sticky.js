@@ -271,6 +271,11 @@ export class Shape {
    */
   at;
   /**
+   * ...
+   * @type {number}
+   */
+  orientation;
+  /**
    * TODO.
    * @type {?string | AUTO}
    */
@@ -321,6 +326,7 @@ export class Shape {
    * @param {Coordinate | number} height - OQ
    * @param {Position} [at]
    * @param {Object} [options]
+   * @param {number} [options.orientation]
    * @param {?string | AUTO} [options.stroke]
    * @param {?string | AUTO} [options.fill]
    * @param {number} [options.start]
@@ -328,12 +334,14 @@ export class Shape {
    * @param {...Shape} links
    */
   constructor(
-    width, height, at = body(0.5, 0.5), { stroke = AUTO, fill = AUTO, start = 0, end = -0 } = {},
+    width, height, at = body(0.5, 0.5),
+    { orientation = 0, stroke = AUTO, fill = AUTO, start = 0, end = -0 } = {},
     ...links
   ) {
     this.width = typeof width === "number" ? w(width) : width;
     this.height = typeof height === "number" ? h(height) : height;
     this.at = at;
+    this.orientation = orientation;
     this.stroke = stroke;
     this.fill = fill;
     this.start = start;
@@ -361,6 +369,7 @@ export class Shape {
       p.fill(this.fill ?? "transparent");
     }
     p.translate(this.renderAt);
+    p.rotate(this.orientation);
 
     this.renderShape(p);
 
