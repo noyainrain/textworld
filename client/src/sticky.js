@@ -165,6 +165,18 @@ export class Position {
   px(shape) {
     throw new Error("abstract");
   }
+
+  // XXX
+  /**
+   * @param {Shape} shape
+   * @returns {number}
+   */
+  // eslint-disable-next-line no-unused-vars
+  angle(shape) {
+    // throw new Error("abstract");
+    // XXX
+    return 0;
+  }
 }
 
 /** TODO. */
@@ -233,11 +245,19 @@ export class Edge extends Position {
   }
 
   /**
-   * @param {Shape} shape - ...
+   * @param {Shape} shape
    */
   px(shape) {
     return shape.base?.getEdgePoint(this.index, this.offset, this.crossOffset.px(shape))
       ?? new p5.Vector();
+  }
+
+  // XXX
+  /**
+   * @param {Shape} shape
+   */
+  angle(shape) {
+    return shape.base?.getEdgeAngle(this.index, this.offset) ?? 0;
   }
 }
 
@@ -361,6 +381,8 @@ export class Shape {
     this.renderWidth = this.width.px(this);
     this.renderHeight = this.height.px(this);
     this.renderAt = this.at.px(this);
+    this.renderOrientation = this.orientation * 2 * Math.PI + this.at.angle(this);
+
     p.push();
     if (this.stroke !== AUTO) {
       p.stroke(this.stroke ?? "transparent");
@@ -369,7 +391,7 @@ export class Shape {
       p.fill(this.fill ?? "transparent");
     }
     p.translate(this.renderAt);
-    p.rotate(this.orientation);
+    p.rotate(this.renderOrientation);
 
     this.renderShape(p);
 
@@ -397,6 +419,16 @@ export class Shape {
    */
   // eslint-disable-next-line no-unused-vars
   getEdgePoint(index, offset, crossOffset) {
+    throw new Error("Unimplemented method");
+  }
+
+  /**
+   * ...
+   * @param {number} index
+   * @param {Coordinate} offset
+   */
+  // eslint-disable-next-line no-unused-vars
+  getEdgeAngle(index, offset) {
     throw new Error("Unimplemented method");
   }
 }
@@ -546,6 +578,19 @@ export class Circle extends Shape {
     } else {
       // const t = offsetPx / this.lengthPx;
       return new p5.Vector(0, 0);
+    }
+  }
+
+  /**
+   * ...
+   * @param {number} index
+   * @param {Coordinate} offset
+   */
+  getEdgeAngle(index, offset) {
+    if (offset instanceof EdgeCoordinate) {
+      return offset.value * 2 * Math.PI + Math.PI / 2;
+    } else {
+      return 0;
     }
   }
 }

@@ -2,6 +2,8 @@ import p5 from "p5";
 import { Circle, Triangle, body, edge, h, px, w } from "#sticky";
 
 new p5((p) => {
+  const earW = 1 / 3;
+  const earH = 3 / 4 * earW;
   const model = new Circle(
     1, 1, body(1 / 2, 1 / 2), {},
 
@@ -21,7 +23,8 @@ new p5((p) => {
     new Circle(
       h(1 / 2), 1 / 2, body(1 / 2, 1 / 2), { stroke: "pink", fill: "black" },
       // Ear
-      new Triangle(1 / 4, 1 / 4, edge(0, 3 / 4, h(1 / 4 / 2)), { start: 1, end: 3 }),
+      new Triangle(earW, earH, edge(0, 10 / 16, h(earH / 2 - earH / 8)), { start: 1, end: 3 }),
+      new Triangle(earW, earH, edge(0, 14 / 16, h(earH / 2 - earH / 8)), { start: 1, end: 3 }),
       // Eye
       new Circle(
         1 / 4, 1 / 4 * 2 / 3, body(1 / 4, 1 / 2), {},
