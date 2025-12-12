@@ -87,13 +87,94 @@ export function h(value) {
   return new HeightCoordinate(value);
 }
 
+export class EdgeCoordinate extends Coordinate {
+  /**
+   * ...
+   * @type {number}
+   */
+  index;
+
+  /**
+   * @param {number} index
+   * @param {number} value
+   */
+  constructor(index, value) {
+    super(value);
+    this.index = index;
+  }
+
+  /**
+   * @param {Shape} shape
+   */
+  // eslint-disable-next-line no-unused-vars
+  px(shape) {
+    return 0;
+    // shape.getEdge(this.index)
+    // this.value * shape.getEdgeLengthPx(this.index);
+  }
+}
+
+/**
+ * ...
+ * @param {number} index
+ * @param {number} value
+ */
+export function e(index, value) {
+  return new EdgeCoordinate(index, value);
+}
+
+// e(0, 1 / 2)
+// edge(0, px(50))
+// edge(0, 1 / 2)
+// edge(0, e(0, 1 / 2))
+
+// export class PolygonEdge {
+//   a;
+//   b;
+//
+//   get lengthPx {
+//   }
+//
+//   getPointPx(offsetPx) {
+//
+//   }
+// }
+
+// export class EllipseEdge {
+//   center;
+//   radiusX;
+//   radiusY;
+//   //start;
+//   //end;
+//
+// }
+//
+// shape.getEdge(index).getPointPx(offset.px(shape))
+//                                 shape.getEdge(index).lengthPx
+
+/**
+ * ...
+ */
+export class Position {
+  /**
+   * ...
+   * @param {Shape} shape - ...
+   * @returns {p5.Vector}
+   */
+  // eslint-disable-next-line no-unused-vars
+  px(shape) {
+    throw new Error("abstract");
+  }
+}
+
 /** TODO. */
-export class Body {
+export class Body extends Position {
   /**
    * @param {Coordinate | number} x
    * @param {Coordinate | number} y
    */
   constructor(x, y) {
+    super();
     this.x = typeof x === "number" ? w(x) : x;
     this.y = typeof y === "number" ? h(y) : y;
   }
@@ -119,6 +200,57 @@ export function body(x, y) {
   return new Body(x, y);
 }
 
+// getEdges() -> curves (basically every curve is an axis)
+// getCartesianCoordinateSystem() -> origin, xAxis, yAxis
+// getPolarCoordinateSystem() -> pole, axis
+export class Edge extends Position {
+  /**
+   * ...
+   * @type {number}
+   */
+  index;
+  /**
+   * ...
+   * @type {Coordinate}
+   */
+  offset;
+  /**
+   * ...
+   * @type {Coordinate}
+   */
+  crossOffset;
+
+  /**
+   * @param {number} index
+   * @param {Coordinate | number} offset
+   * @param {Coordinate | number} crossOffset
+   */
+  constructor(index, offset = 1 / 2, crossOffset = 0) {
+    super();
+    this.index = index;
+    this.offset = typeof offset === "number" ? e(index, offset) : offset;
+    this.crossOffset = typeof crossOffset === "number" ? e(index, crossOffset) : crossOffset;
+  }
+
+  /**
+   * @param {Shape} shape - ...
+   */
+  px(shape) {
+    return shape.base?.getEdgePoint(this.index, this.offset, this.crossOffset.px(shape))
+      ?? new p5.Vector();
+  }
+}
+
+/**
+ * ...
+ * @param {number} index
+ * @param {Coordinate | number} offset
+ * @param {Coordinate | number} crossOffset
+ */
+export function edge(index, offset = 1 / 2, crossOffset = 0) {
+  return new Edge(index, offset, crossOffset);
+}
+
 /**
  * Basic geometric shape.
  */
@@ -135,7 +267,7 @@ export class Shape {
   height;
   /**
    * TODO.
-   * @type {Body}
+   * @type {Position}
    */
   at;
   /**
@@ -187,7 +319,7 @@ export class Shape {
   /**
    * @param {Coordinate | number} width - OQ
    * @param {Coordinate | number} height - OQ
-   * @param {Body} [at]
+   * @param {Position} [at]
    * @param {Object} [options]
    * @param {?string | AUTO} [options.stroke]
    * @param {?string | AUTO} [options.fill]
@@ -244,6 +376,18 @@ export class Shape {
    */
   // eslint-disable-next-line no-unused-vars
   renderShape(p) {
+    throw new Error("Unimplemented method");
+  }
+
+  /**
+   * ...
+   * @param {number} index - ...
+   * @param {Coordinate | number} offset - ...
+   * @param {number} crossOffset - ...
+   * @returns {p5.Vector}
+   */
+  // eslint-disable-next-line no-unused-vars
+  getEdgePoint(index, offset, crossOffset) {
     throw new Error("Unimplemented method");
   }
 }
@@ -365,5 +509,34 @@ export class Circle extends Shape {
     p.arc(
       0, 0, this.renderWidth, this.renderHeight, this.start * 2 * Math.PI, end * 2 * Math.PI,
     );
+  }
+
+  // getEdgeLength(index) {
+  // }
+
+  /**
+   * ...
+   * @param {number} index
+   * @param {Coordinate} offset
+   * @param {number} crossOffset
+   */
+  getEdgePoint(index, offset, crossOffset) {
+    if (offset instanceof EdgeCoordinate) {
+      const angle = offset.value * 2 * Math.PI;
+      return new p5.Vector(
+        (this.renderWidth / 2 + crossOffset) * Math.cos(angle),
+        (this.renderHeight / 2 + crossOffset) * Math.sin(angle),
+      );
+
+      // const renderCrossOffset = crossOffset.px(this);
+      // const crossAxis = p5.Vector.fromAngle(angle);
+      // const point = new p5.Vector(center.x * Math.cos(t), center.y * Math.sin(t));
+      // const center = new p5.Vector(this.renderWidth / 2, this.renderHeight / 2);
+      // const crossAxis = p5.Vector.sub(point, center).normalize();
+      // return point;
+    } else {
+      // const t = offsetPx / this.lengthPx;
+      return new p5.Vector(0, 0);
+    }
   }
 }

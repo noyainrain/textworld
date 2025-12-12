@@ -1,5 +1,5 @@
 import p5 from "p5";
-import { Circle, Triangle, body, h, px, w } from "#sticky";
+import { Circle, Triangle, body, edge, h, px, w } from "#sticky";
 
 new p5((p) => {
   const model = new Circle(
@@ -21,7 +21,7 @@ new p5((p) => {
     new Circle(
       h(1 / 2), 1 / 2, body(1 / 2, 1 / 2), { stroke: "pink", fill: "black" },
       // Ear
-      new Triangle(1 / 4, 1 / 4, body(1 / 2, 1 / 4), { start: 1, end: 3 }),
+      new Triangle(1 / 4, 1 / 4, edge(0, 3 / 4, h(1 / 4 / 2)), { start: 1, end: 3 }),
       // Eye
       new Circle(
         1 / 4, 1 / 4 * 2 / 3, body(1 / 4, 1 / 2), {},
@@ -47,6 +47,8 @@ new p5((p) => {
   p.draw = () => {
     p.background("black");
     p.noFill();
+    // const t = (p.millis() / 1000) / 4 % 1;
+    // model.links[128].links[0].at = edge(0, t, h(1 / 4 / 2));
     model.render(p);
   };
 });
