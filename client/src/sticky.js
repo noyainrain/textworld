@@ -121,13 +121,13 @@ export class Shape {
   renderHeight = 0;
 
   /**
-   * @param {Coordinate} width - OQ
-   * @param {Coordinate} height - OQ
+   * @param {Coordinate | number} width - OQ
+   * @param {Coordinate | number} height - OQ
    * @param {Shape[]} links
    */
   constructor(width, height, links) {
-    this.width = width;
-    this.height = height;
+    this.width = typeof width === "number" ? w(width) : width;
+    this.height = typeof height === "number" ? h(height) : height;
     this.links = links;
     for (const link of links) {
       link.base = this;
@@ -163,8 +163,8 @@ export class Shape {
  */
 export class Circle extends Shape {
   /**
-   * @param {Coordinate} width - OQ
-   * @param {Coordinate} height - OQ
+   * @param {Coordinate | number} width - OQ
+   * @param {Coordinate | number} height - OQ
    * @param {...Shape} links
    */
   constructor(width, height, ...links) {
