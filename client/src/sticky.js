@@ -646,6 +646,27 @@ export class Triangle extends Polygon {
 }
 
 /**
+ * Rectangle.
+ */
+export class Rectangle extends Polygon {
+  /**
+   * @param {p5} p
+   */
+  renderShape(p) {
+    const wh = this.renderWidth / 2;
+    const hh = this.renderHeight / 2;
+
+    this.vertices = [
+      new p5.Vector(-wh, -hh),
+      new p5.Vector(wh, -hh),
+      new p5.Vector(wh, hh),
+      new p5.Vector(-wh, hh),
+    ];
+    super.renderShape(p);
+  }
+}
+
+/**
  * Circle.
  */
 export class Circle extends Shape {
