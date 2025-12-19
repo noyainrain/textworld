@@ -21,7 +21,8 @@ new p5((p) => {
 
     // Cat
     new Circle(
-      h(1 / 2), 1 / 2, body(1 / 2, tween(1 / 2 - 1 / 2 / 16 / 2, 1 / 2 + 1 / 2 / 16 / 2, 2, true)),
+      h(1 / 2), 1 / 2,
+      body(1 / 2, tween(1 / 2 - 1 / 2 / 16 / 2, 1 / 2 + 1 / 2 / 16 / 2, 2, { yoyo: true })),
       { stroke: "pink", fill: "black" },
       // Tail
       new Circle(

@@ -340,14 +340,17 @@ export class Tween extends Value {
    * @param {number} from
    * @param {number} to
    * @param {number} duration
-   * @param {boolean} yoyo
+   * @param {Object} [options]
+   * @param {boolean} [options.yoyo]
+   * @param {number} [options.offset]
    */
-  constructor(from, to, duration, yoyo = false) {
+  constructor(from, to, duration, { offset = 0, yoyo = false } = {}) {
     super();
     this.from = from;
     this.to = to;
     this.duration = duration;
     this.yoyo = yoyo;
+    this.offset = offset;
   }
 
   /**
@@ -355,7 +358,7 @@ export class Tween extends Value {
    * @returns {number}
    */
   evaluate(shape) {
-    let p = ((shape.p?.millis() ?? 0) / 1000) / this.duration % 1;
+    let p = ((shape.p?.millis() ?? 0) / 1000 + this.offset) / this.duration % 1;
     if (this.yoyo) {
       p = p * 2;
       p = p >= 1 ? 2 - p : p;
@@ -371,10 +374,12 @@ export class Tween extends Value {
  * @param {number} from
  * @param {number} to
  * @param {number} duration
- * @param {boolean} yoyo
+ * @param {Object} [options]
+ * @param {boolean} [options.yoyo]
+ * @param {number} [options.offset]
  */
-export function tween(from, to, duration, yoyo = false) {
-  return new Tween(from, to, duration, yoyo);
+export function tween(from, to, duration, { offset = 0, yoyo = false } = {}) {
+  return new Tween(from, to, duration, { offset, yoyo });
 }
 
 /**
