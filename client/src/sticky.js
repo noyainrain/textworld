@@ -266,7 +266,7 @@ export function edge(index, offset = 1 / 2, crossOffset = 0) {
 /**
  * @param {number} progress
  */
-function ease(progress) {
+export function ease(progress) {
   return (1 - Math.cos(progress * Math.PI)) / 2;
 }
 
@@ -333,6 +333,13 @@ export function body(x, y) {
 }
 
 /**
+ * ...
+ * @callback EasingCallback
+ * @param {number} progress - ...
+ * @returns {number}
+ */
+
+/**
  * @extends Value<number>
  */
 export class Tween extends Value {
@@ -341,14 +348,16 @@ export class Tween extends Value {
    * @param {number} to
    * @param {number} duration
    * @param {Object} [options]
+   * @param {EasingCallback} [options.easing]
    * @param {boolean} [options.yoyo]
    * @param {number} [options.offset]
    */
-  constructor(from, to, duration, { offset = 0, yoyo = false } = {}) {
+  constructor(from, to, duration, { offset = 0, easing = ease, yoyo = false } = {}) {
     super();
     this.from = from;
     this.to = to;
     this.duration = duration;
+    this.easing = easing;
     this.yoyo = yoyo;
     this.offset = offset;
   }
@@ -363,7 +372,7 @@ export class Tween extends Value {
       p = p * 2;
       p = p >= 1 ? 2 - p : p;
     }
-    const progress = ease(p);
+    const progress = this.easing(p);
     const v = this.from + (this.to - this.from) * progress;
     // console.log("v", (canvas.millis() / 1000).toFixed(2), v);
     return v;
@@ -375,11 +384,12 @@ export class Tween extends Value {
  * @param {number} to
  * @param {number} duration
  * @param {Object} [options]
+ * @param {EasingCallback} [options.easing]
  * @param {boolean} [options.yoyo]
  * @param {number} [options.offset]
  */
-export function tween(from, to, duration, { offset = 0, yoyo = false } = {}) {
-  return new Tween(from, to, duration, { offset, yoyo });
+export function tween(from, to, duration, { offset = 0, easing = ease, yoyo = false } = {}) {
+  return new Tween(from, to, duration, { offset, easing, yoyo });
 }
 
 /**
