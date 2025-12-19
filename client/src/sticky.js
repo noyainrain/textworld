@@ -271,6 +271,13 @@ export function ease(progress) {
 }
 
 /**
+ * @param {number} progress
+ */
+export function linear(progress) {
+  return progress;
+}
+
+/**
  * @template T
  */
 export class Value {
