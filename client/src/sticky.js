@@ -528,7 +528,9 @@ export class Shape {
       p.fill(this.fill ?? "transparent");
     }
     if (this.renderBlur !== AUTO) {
-      p.drawingContext.filter = this.renderBlur ? `blur(${this.renderBlur}px)` : `none`;
+      if (p.drawingContext instanceof CanvasRenderingContext2D) {
+        p.drawingContext.filter = this.renderBlur ? `blur(${this.renderBlur}px)` : `none`;
+      }
     }
     p.translate(this.renderAt);
     p.rotate(this.renderOrientation);
