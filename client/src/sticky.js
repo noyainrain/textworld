@@ -434,6 +434,11 @@ export class Shape {
    */
   fill;
   /**
+   * ...
+   * @type {Coordinate | AUTO}
+   */
+  blur;
+  /**
    * TODO.
    * @type {number}
    */
@@ -477,13 +482,14 @@ export class Shape {
    * @param {number} [options.orientation]
    * @param {?string | AUTO} [options.stroke]
    * @param {?string | AUTO} [options.fill]
+   * @param {Coordinate | number | AUTO} [options.blur]
    * @param {number} [options.start]
    * @param {number} [options.end]
    * @param {...Shape} links
    */
   constructor(
     width, height, at = body(0.5, 0.5),
-    { orientation = 0, stroke = AUTO, fill = AUTO, start = 0, end = -0 } = {},
+    { orientation = 0, stroke = AUTO, fill = AUTO, blur = AUTO, start = 0, end = -0 } = {},
     ...links
   ) {
     this.width = typeof width === "number" ? w(width) : width;
@@ -492,6 +498,7 @@ export class Shape {
     this.orientation = orientation;
     this.stroke = stroke;
     this.fill = fill;
+    this.blur = typeof blur === "number" ? h(blur) : blur;
     this.start = start;
     this.end = end;
     this.links = links;
@@ -511,6 +518,7 @@ export class Shape {
     const at = this.at.evaluate(this);
     this.renderAt = at.px(this);
     this.renderOrientation = this.orientation * 2 * Math.PI + at.angle(this);
+    this.renderBlur = this.blur === AUTO ? AUTO : this.blur.px(this);
 
     p.push();
     if (this.stroke !== AUTO) {
@@ -518,6 +526,9 @@ export class Shape {
     }
     if (this.fill !== AUTO) {
       p.fill(this.fill ?? "transparent");
+    }
+    if (this.renderBlur !== AUTO) {
+      p.drawingContext.filter = this.renderBlur ? `blur(${this.renderBlur}px)` : `none`;
     }
     p.translate(this.renderAt);
     p.rotate(this.renderOrientation);
