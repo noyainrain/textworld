@@ -41,11 +41,12 @@ new p5((p) => {
     const diff = count - model.links.length;
     // console.log(diff);
     if (diff < 0) {
-      model.unlink(...model.links.slice(diff));
+      // TODO backport
+      model.unstick(...model.links.slice(diff));
     } else {
       for (let i = 0; i < diff; i++) {
         const shape = new Ellipse(size, size);
-        model.link(shape);
+        model.stick(shape);
         // model.links.unshift(shape)
         shape.base = model;
       }
