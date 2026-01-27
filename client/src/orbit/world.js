@@ -1,5 +1,5 @@
 import p5 from "p5";
-import { Circle, Rectangle, Triangle, body, h } from "#sticky";
+import { Ellipse, Rectangle, Triangle, body, h, w } from "#sticky";
 
 /**
  * ...
@@ -63,7 +63,7 @@ class Shuttle extends Entity {
    * @param {EntityOptions} [options]
    */
   constructor(options = {}) {
-    super(new Triangle(Shuttle.SIZE, Shuttle.SIZE, body(0, 0), { fill: "blue" }), options);
+    super(new Triangle(w(Shuttle.SIZE), h(Shuttle.SIZE), body(0, 0), { fill: "blue" }), options);
   }
 }
 
@@ -82,7 +82,7 @@ class Particle extends Entity {
    * @param {EntityOptions} options
    */
   constructor(size, options = {}) {
-    super(new Circle(size, size, body(0, 0), { fill: "purple" }), options);
+    super(new Ellipse(w(size), h(size), body(0, 0), { fill: "purple" }), options);
     this.size = size;
   }
 }
@@ -146,12 +146,10 @@ export class World {
 
     // maps m to px
     this.camera = new Rectangle(
-      h(1 / World.#VIEW), 1 / World.#VIEW, body(0, 0), { fill: null }, this.shuttle.model,
+      h(1 / World.#VIEW), h(1 / World.#VIEW), body(0, 0), { fill: null }, this.shuttle.model,
       ...this.particles.map(particle => particle.model),
     );
-    this.model = new Rectangle(
-      1, 1, body(1 / 2, 1 / 2), { fill: "black", stroke: null }, this.camera,
-    );
+    this.model = new Rectangle({ fill: "black", stroke: null }, this.camera);
   }
 
   #computeCollisions() {
